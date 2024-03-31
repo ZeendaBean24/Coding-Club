@@ -26,7 +26,7 @@ while run:
 	elif key[pygame.K_w] == True:
 		player.move_ip(0, -10)
 	elif key[pygame.K_s] == True:
-		player.move_ip(0, 10)
+		player.move_ip(0, -10)
 	
 	for event in pygame.event.get(): # Loops through all the events that Pygame picks up
 		if event.type == pygame.QUIT: # Check if the user is clicking the X button

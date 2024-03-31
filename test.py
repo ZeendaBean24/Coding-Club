@@ -11,10 +11,14 @@ player = pygame.Rect((300, 250, 50, 50))
 
 run = True
 while run:
+
+	pygame.draw.rect(screen, (255, 0, 0), player)
 	
 	for event in pygame.event.get(): # Loops through all the events that Pygame picks up
 		if event.type == pygame.QUIT: # Check if the user is clicking the X button
 			run = False
+			
+	pygame.display.update() # Updates the rectangle
 
 pygame.quit()
 
