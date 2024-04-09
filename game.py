@@ -1,115 +1,102 @@
 import pygame
-
+ 
 # Initialize Pygame
 pygame.init()
-
+ 
 # Set the screen width and height
 SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 800
-
+SCREEN_HEIGHT = 600
+ 
 # Create the game window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('My Game')
-
+ 
 # Load and transform the player image
+# Ensure you have an 'image.png' in your project directory or adjust this line accordingly
 player_image = pygame.image.load("image.png")
 player_image = pygame.transform.scale(player_image, (50, 50))
-
+ 
 # Player attributes
-playerSpeed = 7
-player_x, player_y = 100, 600
-
-# Platform attributes
-platform_x, platform_y, platform_width, platform_height = 300, 500, 200, 20
-
-# Obstacle attributes
-obstacle_x, obstacle_y, obstacle_width, obstacle_height = 550, 450, 50, 200
-
-# Goal attributes
-goal_x, goal_y, goal_width, goal_height = 700, 550, 50, 50
-
+player_speed = 7
+player_x, player_y = 50, SCREEN_HEIGHT-70
+player_width, player_height = 50, 50
+ 
+# Define colors
+BLACK = (0, 0, 0)
+GREEN = (0, 255, 0)
+GRAY = (185, 185, 185)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+ 
+# Create a pygame.Rect object for the player for easier collision handling
+player_rect = pygame.Rect(player_x, player_y, player_width, player_height)
+ 
+# Platform attributes - List of platforms (x, y, width, height)
+platforms = [(0, SCREEN_HEIGHT-20, SCREEN_WIDTH, 20),
+             (150, SCREEN_HEIGHT-100, 100, 20),
+             (350, SCREEN_HEIGHT-180, 200, 20),
+             (550, SCREEN_HEIGHT-260, 100, 20)]
+ 
+end = (650, SCREEN_HEIGHT-460, 60, 60)
+ 
 # Physics attributes
-gravity = 0.5
-jump_speed = 15
+gravity = 0.7
+jump_strength = 15
 player_y_velocity = 0
 is_jumping = False
-
-# Ground level
-GROUND_HEIGHT = 650
-
+ 
 # Game loop flag
 run = True
-
+ 
 while run:
-    screen.fill((0, 0, 0))  # Fill the screen with black
-
-    # Process input
-    key = pygame.key.get_pressed()
-
-    # Draw ground
-    pygame.draw.rect(screen, (34, 139, 34), (0, GROUND_HEIGHT, SCREEN_WIDTH, 50))
-
-    # Draw the platform
-    pygame.draw.rect(screen, (105, 105, 105), (platform_x, platform_y, platform_width, platform_height))
-
-    # Draw the platform
-    pygame.draw.rect(screen, (105, 105, 105), (platform_x - 100, platform_y - 50, platform_width, platform_height))
-
-    # Move the player
-    if key[pygame.K_a]:
-        player_x -= playerSpeed
-    if key[pygame.K_d]:
-        player_x += playerSpeed
-
-    # Player jump logic
-    if key[pygame.K_w] and not is_jumping:
-        is_jumping = True
-        player_y_velocity = -jump_speed
-
-    # Apply gravity always
-    player_y += player_y_velocity
-    player_y_velocity += gravity
-
-    # Collision detection with the platform
-    if player_x + 50 > platform_x and player_x < platform_x + platform_width and player_y + 50 >= platform_y and player_y < platform_y + platform_height:
-        player_y = platform_y - 50
-        is_jumping = False
-        player_y_velocity = 0
-
-    # Stop the player at the ground level
-    if player_y >= GROUND_HEIGHT - 50:  
-        player_y = GROUND_HEIGHT - 50
-        is_jumping = False
-        player_y_velocity = 0
-
-    # Check for game quit
+    screen.fill((0, 0, 0))
+    keys = pygame.key.get_pressed()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-
-    # Keep the player within the screen bounds
-    if player_x < 0:  
-        player_x = 0
-    elif player_x > SCREEN_WIDTH - 50:
-        player_x = SCREEN_WIDTH - 50
-
-    # Draw the player
-    screen.blit(player_image, (player_x, player_y))
-
-    # Draw the obstacle and goal
-    pygame.draw.rect(screen, (255, 0, 0), (obstacle_x, obstacle_y, obstacle_width, obstacle_height))
-    pygame.draw.rect(screen, (0, 0, 255), (goal_x, goal_y, goal_width, goal_height))
-
-    # Check for collisions and goal
-    if player_x < obstacle_x + obstacle_width and player_x + 50 > obstacle_x and player_y + 50 > obstacle_y and player_y < obstacle_y + obstacle_height:
-        print("Game Over!")
-        run = False
-
-    if player_x < goal_x + goal_width and player_x + 50 > goal_x and player_y + 50 > goal_y and player_y < goal_y + goal_height:
+    player_x += (keys[pygame.K_d] - keys[pygame.K_a]) * player_speed
+ 
+    # Jumping
+    if keys[pygame.K_w] and not is_jumping:
+        player_y_velocity = -jump_strength
+        is_jumping = True  # Player leaves the ground
+ 
+    # Update player position with gravity
+    player_y += player_y_velocity
+    player_y_velocity += gravity
+ 
+    # Check for collision with platforms
+    player_rect.update(player_x, player_y, player_width, player_height)
+    is_jumping = True 
+    for plat in platforms:
+        plat_rect = pygame.Rect(plat[0], plat[1], plat[2], plat[3])
+        if player_rect.colliderect(plat_rect):
+            if player_y_velocity > 0:
+                player_y = plat_rect.top - player_height
+                player_y_velocity = 0
+                is_jumping = False
+            elif player_y_velocity < 0:
+                player_y = plat_rect.bottom
+                player_y_velocity = 0
+                hit_ceiling = True
+ 
+    # Prevent the player from going out of bounds
+    player_x = max(0, min(SCREEN_WIDTH - player_width, player_x))
+    player_y = max(0, min(SCREEN_HEIGHT - player_height, player_y))
+ 
+    # Draw platforms
+    for plat in platforms:
+        pygame.draw.rect(screen, GRAY, plat)
+ 
+    pygame.draw.rect(screen, RED, end)
+    end_rect = pygame.Rect(end[0], end[1], end[2], end[3])
+    if player_rect.colliderect(end_rect):
+        # placeholder
         print("Level Complete!")
         run = False
-
-    # Update the display
+ 
+    # Draw the player
+    screen.blit(player_image, (player_x, player_y))
     pygame.display.update()
-
+ 
 pygame.quit()
