@@ -36,7 +36,7 @@ while run:
         player_y_velocity = -jump_speed
     if is_jumping:
         player_y += player_y_velocity
-        player_y_velocity += gravity
+        player_y_velocity += (0.5 * gravity)
     
     if player_y >= 600:  
         player_y = 600
