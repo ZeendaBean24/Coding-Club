@@ -9,11 +9,11 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('My Game')
 player_image = pygame.image.load("image.png")
 player_image = pygame.transform.scale(player_image, (50, 50))
-playerSpeed = 10
+playerSpeed = 7
 player_x, player_y = 100, 600
 
-gravity = 1
-jump_speed = 20
+gravity = 0.5
+jump_speed = 15
 player_y_velocity = 0
 is_jumping = False
 GROUND_HEIGHT = 600
@@ -36,7 +36,7 @@ while run:
         player_y_velocity = -jump_speed
     if is_jumping:
         player_y += player_y_velocity
-        player_y_velocity += (0.5 * gravity)
+        player_y_velocity += gravity
     
     if player_y >= 600:  
         player_y = 600
