@@ -12,6 +12,21 @@ player_image = pygame.transform.scale(player_image, (50, 50))
 playerSpeed = 7
 player_x, player_y = 100, 600
 
+# Define platform dimensions and position
+platform_x, platform_y, platform_width, platform_height = 300, 500, 200, 20
+
+# Define obstacle dimensions and position
+obstacle_x, obstacle_y, obstacle_width, obstacle_height = 400, 480, 50, 20
+
+# Draw the obstacle
+pygame.draw.rect(screen, (255, 0, 0), (obstacle_x, obstacle_y, obstacle_width, obstacle_height))
+
+# Define the goal dimensions and position
+goal_x, goal_y, goal_width, goal_height = 700, 550, 50, 50
+
+# Draw the goal
+pygame.draw.rect(screen, (0, 0, 255), (goal_x, goal_y, goal_width, goal_height))
+
 gravity = 0.5
 jump_speed = 15
 player_y_velocity = 0
