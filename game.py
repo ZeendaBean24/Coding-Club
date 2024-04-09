@@ -23,7 +23,7 @@ player_x, player_y = 100, 600
 platform_x, platform_y, platform_width, platform_height = 300, 500, 200, 20
 
 # Obstacle attributes
-obstacle_x, obstacle_y, obstacle_width, obstacle_height = 400, 480, 50, 20
+obstacle_x, obstacle_y, obstacle_width, obstacle_height = 550, 450, 50, 200
 
 # Goal attributes
 goal_x, goal_y, goal_width, goal_height = 700, 550, 50, 50
@@ -35,7 +35,7 @@ player_y_velocity = 0
 is_jumping = False
 
 # Ground level
-GROUND_HEIGHT = 600
+GROUND_HEIGHT = 650
 
 # Game loop flag
 run = True
@@ -47,7 +47,7 @@ while run:
     key = pygame.key.get_pressed()
 
     # Draw ground
-    pygame.draw.rect(screen, (34, 139, 34), (0, GROUND_HEIGHT+50, SCREEN_WIDTH, GROUND_HEIGHT+50))
+    pygame.draw.rect(screen, (34, 139, 34), (0, GROUND_HEIGHT, SCREEN_WIDTH, 50))
 
     # Draw the platform
     pygame.draw.rect(screen, (105, 105, 105), (platform_x, platform_y, platform_width, platform_height))
