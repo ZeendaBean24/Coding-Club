@@ -37,6 +37,27 @@ while run:
     screen.fill((0, 0, 0))
     key = pygame.key.get_pressed()
     pygame.draw.rect(screen, (34, 139, 34), (0, GROUND_HEIGHT+50, SCREEN_WIDTH, GROUND_HEIGHT+50))
+
+    # Draw platform
+    pygame.draw.rect(screen, (105, 105, 105), (platform_x, platform_y, platform_width, platform_height))
+
+    # Check for collisions with the platform to allow the player to land
+    if player_x < platform_x + platform_width and player_x + 50 > platform_x and player_y + 50 > platform_y and player_y < platform_y + platform_height:
+        player_y = platform_y - 50
+        is_jumping = False
+        player_y_velocity = 0
+
+    # Game logic for obstacle collision and reaching the goal
+    # Check if player collides with the obstacle
+    if player_x < obstacle_x + obstacle_width and player_x + 50 > obstacle_x and player_y + 50 > obstacle_y and player_y < obstacle_y + obstacle_height:
+        print("Game Over!")  # Placeholder for game over logic
+        run = False
+
+    # Check if player reaches the goal
+    if player_x < goal_x + goal_width and player_x + 50 > goal_x and player_y + 50 > goal_y and player_y < goal_y + goal_height:
+        print("Level Complete!")  # Placeholder for level completion logic
+        run = False
+
     if key[pygame.K_a]:
         player_x -= playerSpeed
     if key[pygame.K_d]:
