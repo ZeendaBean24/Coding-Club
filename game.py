@@ -52,27 +52,29 @@ while run:
     # Draw the platform
     pygame.draw.rect(screen, (105, 105, 105), (platform_x, platform_y, platform_width, platform_height))
 
-    # Collision detection with the platform
-    if player_x + 50 > platform_x and player_x < platform_x + platform_width and player_y + 50 >= platform_y and player_y < platform_y + platform_height:
-        player_y = platform_y - 50
-        is_jumping = False
-        player_y_velocity = 0
+    # Draw the platform
+    pygame.draw.rect(screen, (105, 105, 105), (platform_x - 100, platform_y - 50, platform_width, platform_height))
 
     # Move the player
     if key[pygame.K_a]:
         player_x -= playerSpeed
     if key[pygame.K_d]:
-        player_x += playerSpeed    
+        player_x += playerSpeed
 
     # Player jump logic
     if key[pygame.K_w] and not is_jumping:
         is_jumping = True
         player_y_velocity = -jump_speed
 
-    # Apply gravity
-    if is_jumping:
-        player_y += player_y_velocity
-        player_y_velocity += gravity
+    # Apply gravity always
+    player_y += player_y_velocity
+    player_y_velocity += gravity
+
+    # Collision detection with the platform
+    if player_x + 50 > platform_x and player_x < platform_x + platform_width and player_y + 50 >= platform_y and player_y < platform_y + platform_height:
+        player_y = platform_y - 50
+        is_jumping = False
+        player_y_velocity = 0
 
     # Stop the player at the ground level
     if player_y >= GROUND_HEIGHT - 50:  
@@ -94,19 +96,17 @@ while run:
     # Draw the player
     screen.blit(player_image, (player_x, player_y))
 
-    # Draw the obstacle and goal within the game loop to ensure they are updated on the screen
+    # Draw the obstacle and goal
     pygame.draw.rect(screen, (255, 0, 0), (obstacle_x, obstacle_y, obstacle_width, obstacle_height))
     pygame.draw.rect(screen, (0, 0, 255), (goal_x, goal_y, goal_width, goal_height))
 
-    # Game logic for obstacle collision and reaching the goal
-    # Check if player collides with the obstacle
+    # Check for collisions and goal
     if player_x < obstacle_x + obstacle_width and player_x + 50 > obstacle_x and player_y + 50 > obstacle_y and player_y < obstacle_y + obstacle_height:
-        print("Game Over!")  # Placeholder for game over logic
+        print("Game Over!")
         run = False
 
-    # Check if player reaches the goal
     if player_x < goal_x + goal_width and player_x + 50 > goal_x and player_y + 50 > goal_y and player_y < goal_y + goal_height:
-        print("Level Complete!")  # Placeholder for level completion logic
+        print("Level Complete!")
         run = False
 
     # Update the display
